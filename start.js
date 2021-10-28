@@ -12,13 +12,6 @@
         return Math.sqrt((previousPoint.x - currentPoint.x) ** 2 + (previousPoint.y - currentPoint.y) ** 2)
     }
 
-    function styleStroke(distance){
-        const opacity = Math.min(0.5, 1 / distance);
-        const colorNum=changeColor();
-        console.log(colorNum);
-        return `rgba(${colorNum},${opacity})`;
-    }
-
     function onMouseMove({ pageX, pageY }) {
         if (isDrawing) {
             console.log('on mouse move')
@@ -29,8 +22,9 @@
             context.lineCap = 'round' 
             context.lineJoin = 'round'
             const distance = getDistance(previousPoint, currentPoint)
+            const opacity = Math.min(0.5, 1 / distance)
             context.lineWidth = Math.random() / distance * 40
-            context.strokeStyle = styleStroke(distance);
+            context.strokeStyle = `rgba(${changeColor(document.querySelector(".active").id)},${opacity})`
 
             context.moveTo(previousPoint.x, previousPoint.y)
             context.lineTo(currentPoint.x, currentPoint.y)
@@ -42,7 +36,6 @@
         }
     }
 
-    
     function run() {
         // canvas.addEventListener('mousedown', mouseDown)
         // canvas.addEventListener('mouseup', mouseUp)
@@ -59,8 +52,19 @@
     run()
 })();
 
-function changeColor(color='yellow'){
-    console.log("Clicked")
+const button = document.querySelectorAll(".button");
+const selectColor = (elem) => {
+    removeActiveCircleColor();
+    elem.classList.add("active");
+};
+  
+const removeActiveCircleColor = () => {
+    button.forEach((circle) => {
+      circle.classList.remove("active");
+    });
+};
+
+function changeColor(color){
     if (color=='red'){
         return '255,0,0';
     }else if(color=='blue'){
@@ -71,7 +75,5 @@ function changeColor(color='yellow'){
         return '100,100,100';
     }else if(color=='black'){
         return '0,0,0';
-    }else if (color=='yellow'){
-        return '255,255,0';
     }
 }
